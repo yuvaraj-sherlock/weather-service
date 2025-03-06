@@ -11,15 +11,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.klm.weather.model.Weather;
+import com.klm.weather.repository.InMemoryWeatherRepository;
 import com.klm.weather.repository.WeatherRepository;
 
-public class WeatherRepositoryTest {
+public class InMemoryWeatherRepositoryTest {
 
     private WeatherRepository weatherRepository;
 
     @BeforeEach
     void setUp() {
-        weatherRepository = new WeatherRepository() {};
+        weatherRepository = new InMemoryWeatherRepository() {};
         weatherRepository.deleteAll(); // Ensure it's clean before each test
     }
 
@@ -66,7 +67,7 @@ public class WeatherRepositoryTest {
         Weather w1 = new Weather(1, date, 36.1189f, -86.6892f, "Nashville", "Tennessee", Arrays.asList(20.0, 21.5));
         weatherRepository.save(w1);
 
-        List<Weather> found = weatherRepository.findByDate(date.toString());
+        List<Weather> found = weatherRepository.findByDate(date);
         assertEquals(1, found.size());
         assertEquals("Nashville", found.get(0).getCity());
     }
@@ -79,7 +80,7 @@ public class WeatherRepositoryTest {
         weatherRepository.save(w1);
         weatherRepository.save(w2);
 
-        List<Weather> found = weatherRepository.findByCities(Arrays.asList("nashville", "new york"));
+        List<Weather> found = weatherRepository.findByCityIgnoreCaseIn(Arrays.asList("nashville", "new york"));
         assertEquals(2, found.size());
     }
 
