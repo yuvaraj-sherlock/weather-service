@@ -9,3 +9,6 @@ A Spring Boot-based weather service that provides the rest endpoints to
 - Added methods for saving, retrieving, and filtering weather records  
 - Included support for querying by date and city  
 - Implemented deleteAll() method for clearing data 
+
+- Used Lombok to automatically generating boilerplate code
+- Used Lombok @Slf4j to implement Logging mechanism.

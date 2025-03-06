@@ -2,6 +2,8 @@ package com.klm.weather.repository;
 
 import com.klm.weather.model.Weather;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
+@Slf4j
 @Repository
 public class WeatherRepository {
 
@@ -22,10 +25,12 @@ public class WeatherRepository {
     public Weather save(Weather weather) {
         weather.setId(idGenerator.getAndIncrement());
         weatherData.put(weather.getId(), weather);
+        log.info("Weather information saved: {}", weather);
         return weather;
     }
 
     public List<Weather> findAll() {
+    	log.info("Fetching all weather records. Total count: {}", weatherData.size());
         return new ArrayList<Weather>((weatherData.values()));
     }
 

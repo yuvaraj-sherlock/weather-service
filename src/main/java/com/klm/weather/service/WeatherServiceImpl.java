@@ -3,11 +3,14 @@ package com.klm.weather.service;
 import com.klm.weather.model.Weather;
 import com.klm.weather.repository.WeatherRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Slf4j
 @Component
 public class WeatherServiceImpl implements WeatherService{
 
@@ -16,6 +19,7 @@ public class WeatherServiceImpl implements WeatherService{
 
     @Override
     public Weather saveWeather(Weather weather) {
+    	log.info("Saving Weather information: {}", weather);
         Weather savedWeather = weatherRepository.save(weather);
         return savedWeather;
     }
@@ -25,14 +29,19 @@ public class WeatherServiceImpl implements WeatherService{
         List<Weather> weatherList = weatherRepository.findAll();
         
         if (date != null) {
+        	log.info("Fetching weather records for date: {}", date);
             weatherList = weatherRepository.findByDate(date);
+            log.info("Fetched {} weather records for date: {}", weatherList.size(), date);
         }
 
         if (cities != null && !cities.isEmpty()) {
+        	log.info("Fetching weather records for cities: {}", cities);
             weatherList = weatherRepository.findByCities(cities);
+            log.info("Fetched {} weather records for cities: {}", weatherList.size(), cities);
         }
 
         if ("date".equals(sort)) {
+        	log.info("Fetching weather records in sorder order");
             Collections.sort(weatherList, new Comparator<Weather>() {
                 @Override
                 public int compare(Weather w1, Weather w2) {
@@ -44,6 +53,7 @@ public class WeatherServiceImpl implements WeatherService{
                 }
             });
         } else if ("-date".equals(sort)) {
+        	log.info("Fetching weather records in reverse order");
            Collections.sort(weatherList, new Comparator<Weather>() {
                 @Override
                 public int compare(Weather w1, Weather w2) {
@@ -61,6 +71,7 @@ public class WeatherServiceImpl implements WeatherService{
 
     @Override
     public Optional<Weather> getWeatherById(int id) {
+    	log.info("Fetching weather records by Id: {} "+id);
         return weatherRepository.findById(id);
     }
 
