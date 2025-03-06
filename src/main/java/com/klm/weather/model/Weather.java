@@ -1,15 +1,10 @@
 package com.klm.weather.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-
 import java.util.Date;
 import java.util.List;
 
-@Entity
 public class Weather {
 
-    @Id
     private Integer id;
 
     private Date date;
