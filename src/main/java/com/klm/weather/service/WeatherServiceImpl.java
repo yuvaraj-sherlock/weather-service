@@ -2,20 +2,22 @@ package com.klm.weather.service;
 
 import com.klm.weather.model.Weather;
 import com.klm.weather.repository.WeatherRepository;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Slf4j
 @Component
 public class WeatherServiceImpl implements WeatherService{
 
-    @Autowired
-    private WeatherRepository weatherRepository;
+	@Autowired
+	private WeatherRepository weatherRepository;
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public Weather saveWeather(Weather weather) {
@@ -30,13 +32,19 @@ public class WeatherServiceImpl implements WeatherService{
         
         if (date != null) {
         	log.info("Fetching weather records for date: {}", date);
-            weatherList = weatherRepository.findByDate(date);
+        	Date parsedDate = null;
+			try {
+				parsedDate = dateFormat.parse(date);
+			} catch (ParseException e) {
+				log.error("Error parsing date: {} - Exception: {}", date, e.getMessage(), e);
+			}
+            weatherList = weatherRepository.findByDate(parsedDate);
             log.info("Fetched {} weather records for date: {}", weatherList.size(), date);
         }
 
         if (cities != null && !cities.isEmpty()) {
         	log.info("Fetching weather records for cities: {}", cities);
-            weatherList = weatherRepository.findByCities(cities);
+            weatherList = weatherRepository.findByCityIgnoreCaseIn(cities);
             log.info("Fetched {} weather records for cities: {}", weatherList.size(), cities);
         }
 
