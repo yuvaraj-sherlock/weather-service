@@ -18,3 +18,7 @@ A Spring Boot-based weather service that provides the rest endpoints to
 - Enabled dynamic selection of repository implementation at runtime.
 - Configure weather.repository in application.properties to switch between in-memory and MySQL repositories
 - weather.repository=inMemoryWeatherRepository  # Change to mySQLWeatherRepository for MySQL
+
+### SpringDoc OpenAPI
+- Enabled spring doc
+- Use this link: http://localhost:8000/swagger-ui/index.html

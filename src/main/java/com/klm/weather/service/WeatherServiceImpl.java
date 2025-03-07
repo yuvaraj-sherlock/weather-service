@@ -22,64 +22,69 @@ public class WeatherServiceImpl implements WeatherService{
     @Override
     public Weather saveWeather(Weather weather) {
     	log.info("Saving Weather information: {}", weather);
-        Weather savedWeather = weatherRepository.save(weather);
-        return savedWeather;
+        return weatherRepository.save(weather);
     }
 
     @Override
     public List<Weather> getAllWeatherByOptionalParams(String date, List<String> cities, String sort){
         List<Weather> weatherList = weatherRepository.findAll();
-        
-        if (date != null) {
-        	log.info("Fetching weather records for date: {}", date);
-        	Date parsedDate = null;
-			try {
-				parsedDate = dateFormat.parse(date);
-			} catch (ParseException e) {
-				log.error("Error parsing date: {} - Exception: {}", date, e.getMessage(), e);
-			}
-            weatherList = weatherRepository.findByDate(parsedDate);
-            log.info("Fetched {} weather records for date: {}", weatherList.size(), date);
-        }
-
-        if (cities != null && !cities.isEmpty()) {
-        	log.info("Fetching weather records for cities: {}", cities);
-            weatherList = weatherRepository.findByCityIgnoreCaseIn(cities);
-            log.info("Fetched {} weather records for cities: {}", weatherList.size(), cities);
-        }
-
-        if ("date".equals(sort)) {
-        	log.info("Fetching weather records in sorder order");
-            Collections.sort(weatherList, new Comparator<Weather>() {
-                @Override
-                public int compare(Weather w1, Weather w2) {
-                    int dateComparison = w1.getDate().compareTo(w2.getDate());
-                    if (dateComparison == 0) {
-                        return Integer.compare(w1.getId(), w2.getId());
-                    }
-                    return dateComparison;
-                }
-            });
-        } else if ("-date".equals(sort)) {
-        	log.info("Fetching weather records in reverse order");
-           Collections.sort(weatherList, new Comparator<Weather>() {
-                @Override
-                public int compare(Weather w1, Weather w2) {
-                    int dateComparison = w2.getDate().compareTo(w1.getDate()); // Reverse order
-                    if (dateComparison == 0) {
-                        return Integer.compare(w1.getId(), w2.getId());
-                    }
-                    return dateComparison;
-                }
-            });
-        }
+        weatherList = filterByDate(weatherList, date);
+        weatherList = filterByCities(weatherList, cities);
+        sortWeatherList(weatherList, sort);
 
         return weatherList;
     }
 
+    private void sortWeatherList(List<Weather> weatherList, String sort) {
+        if ("date".equals(sort)) {
+            log.info("Sorting weather records in ascending order");
+            weatherList.sort(Comparator.comparing(Weather::getDate)
+                    .thenComparing(Weather::getId));
+        } else if ("-date".equals(sort)) {
+            log.info("Sorting weather records in descending order");
+            weatherList.sort(Comparator.comparing(Weather::getDate)
+                    .reversed().thenComparing(Weather::getId));
+        }
+    }
+
+    private List<Weather> filterByCities(List<Weather> weatherList, List<String> cities) {
+        if (cities == null || cities.isEmpty()) {
+            return weatherList;
+        }
+
+        log.info("Fetching weather records for cities: {}", cities);
+        weatherList = weatherRepository.findByCityIgnoreCaseIn(cities);
+        log.info("Fetched {} weather records for cities: {}", weatherList.size(), cities);
+
+        return weatherList;
+    }
+
+    private List<Weather> filterByDate(List<Weather> weatherList, String date) {
+        if (date == null) {
+            return weatherList;
+        }
+        log.info("Fetching weather records for date: {}", date);
+        Date parsedDate = parseDate(date);
+
+        if (parsedDate != null) {
+            weatherList = weatherRepository.findByDate(parsedDate);
+            log.info("Fetched {} weather records for date: {}", weatherList.size(), date);
+        }
+
+        return weatherList;
+    }
+    private Date parseDate(String date) {
+        try {
+            return dateFormat.parse(date);
+        } catch (ParseException e) {
+            log.error("Error parsing date: {} - Exception: {}", date, e.getMessage(), e);
+            return null;
+        }
+    }
+
     @Override
     public Optional<Weather> getWeatherById(int id) {
-    	log.info("Fetching weather records by Id: {} "+id);
+        log.info("Fetching weather records by Id: {}", id);
         return weatherRepository.findById(id);
     }
 
