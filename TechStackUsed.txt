@@ -1,0 +1,40 @@
+1. Layer wise implemented: Controller, Service, Repository
+2. Repository layer with local Hashmap implemented
+3. Repository layer with MQSQL implemented
+4. Lombok 
+5. spring doc.
+
+additional features and improvements to enhance further:
+
+1. Caching with Redis
+Implement Redis caching to improve performance by reducing database calls for frequently accessed weather data.
+Use Spring Boot Cache Abstraction with Jedis or Lettuce.
+
+2. Exception Handling & Logging
+Implement Global Exception Handling using @ControllerAdvice and @ExceptionHandler.
+Enhance logging using SLF4J with different log levels (INFO, DEBUG, ERROR) and centralized log management.
+
+3. Security Enhancements
+Implement Spring Security for authentication and authorization.
+Support JWT-based authentication to secure endpoints.
+If needed, integrate with OAuth2 or an external identity provider (Keycloak, Okta, etc.).
+
+4. API Rate Limiting
+Implement Rate Limiting using Spring Boot Resilience4j to prevent excessive API calls.
+
+5. Asynchronous Processing
+Use Spring Boot Async (@Async) for non-blocking operations (e.g., weather data fetching from external APIs).
+Implement Message Queue (RabbitMQ/Kafka) for event-driven architecture.
+
+6. Docker & Deployment
+Containerize your application using Docker and create a Dockerfile.
+Implement Docker Compose for running the app along with MySQL and Redis.
+Deploy on AWS/GCP/Azure or Kubernetes (K8s) for scalability.
+
+7. Unit & Integration Testing
+Enhance JUnit tests with Mockito for service and repository layers.
+Add Testcontainers for MySQL-based tests.
+
+8. API Gateway & Microservices
+If you're planning to scale, introduce Spring Cloud Gateway for managing multiple microservices.
+Implement Service Discovery using Eureka.
